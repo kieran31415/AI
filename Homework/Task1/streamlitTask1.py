@@ -42,7 +42,6 @@ def input_words():
 word1=''
 word2=''
 last_word=''
-valid = 'no'
 
 if word1 == '':
     word1 = st.text_input('What is your first word? ')
