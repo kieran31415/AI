@@ -1,7 +1,7 @@
 import streamlit as st
 from simpleai.search import CspProblem, backtrack
 
-st.title('cryptarithmetic puzzle')
+st.title('Cryptarithmetic puzzle')
 # This definition checks if the last word is the same length or one letter longer than the other two words.
 def check_last(first,second,last):
     if len(first) > len(second):
