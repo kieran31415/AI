@@ -1,0 +1,15 @@
+day;outlook;humidity;wind;play
+d1;sunny;high;weak;no
+d2;sunny;high;strong;no
+d3;overcast;high;weak;yes
+d4;rain;high;weak;yes
+d5;rain;normal;weak;yes
+d6;rain;normal;strong;no
+d7;overcast;normal;strong;yes
+d8;sunny;high;weak;no
+d9;sunny;normal;weak;yes
+d10;rain;normal;weak;yes
+d11;sunny;normal;strong;yes
+d12;overcast;high;strong;yes
+d13;overcast;normal;weak;yes
+d14;rain;high;strong;no
