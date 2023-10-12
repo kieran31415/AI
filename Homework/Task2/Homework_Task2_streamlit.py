@@ -8,7 +8,7 @@ import category_encoders as ce
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 
-student_df = pd.read_csv('.\data\student-mat.csv',delimiter=';')
+student_df = pd.read_csv('https://github.com/kieran31415/AI/blob/main/Homework/Task2/data/student-mat.csv',delimiter=';')
 
 independent_vars = ['school', 'sex', 'age', 'address', 'studytime', 'absences', 'G1', 'G2']
 regression = st.selectbox('What technique would you like to use?',
