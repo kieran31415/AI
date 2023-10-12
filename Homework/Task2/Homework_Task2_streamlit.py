@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import category_encoders as ce
@@ -71,3 +70,5 @@ new_student_df = pd.DataFrame([new_student_features])
 predicted_G3 = model.predict(new_student_df)
 
 st.text("Predicted final score:", predicted_G3[0])
+
+#streamlit run Homework_Task2_streamlit.py
