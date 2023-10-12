@@ -72,3 +72,4 @@ predicted_G3 = model.predict(new_student_df)
 st.text("Predicted final score:", predicted_G3[0])
 
 #streamlit run Homework_Task2_streamlit.py
+#cd ./AI/Homework/Task2
