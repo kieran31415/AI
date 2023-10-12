@@ -78,7 +78,7 @@ if school != '' and sex != '' and age != '' and address != '' and studytime != '
     new_student_df = pd.DataFrame([new_student_features])
 
     predicted_G3 = model.predict(new_student_df).round().astype(int)
-    text = "Predicted final score: "+str(predicted_G3[0])
+    text = "I predict a final score of "+str(predicted_G3[0]+'.')
     st.text(text)
 
 #streamlit run ./AI/Homework/Task2/Homework_Task2_streamlit.py
