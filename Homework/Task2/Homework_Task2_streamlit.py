@@ -7,8 +7,8 @@ from sklearn.model_selection import train_test_split
 import category_encoders as ce
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
-#uploaded_file = st.file_uploader("")
-student_df = pd.read_csv('.\data\student-mat.csv',delimiter=';')
+uploaded_file = st.file_uploader("D:\school23-24\AI\Homework\Task2\data\student-mat.csv")
+student_df = pd.read_csv('D:\school23-24\AI\Homework\Task2\data\student-mat.csv',delimiter=';')
 
 independent_vars = ['school', 'sex', 'age', 'address', 'studytime', 'absences', 'G1', 'G2']
 regression = st.selectbox('What technique would you like to use?',
