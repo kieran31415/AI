@@ -16,7 +16,7 @@ regression = st.selectbox('What technique would you like to use?',
                           ('Linear Regression', 'Gradient Boosting Regressor', 'Support Vector Machine (SVM) Regression', 'Compare R² values'))
 
 # Linear regression
-#encoder = ce.OrdinalEncoder(cols=['school', 'sex', 'address'])
+encoder = ce.OrdinalEncoder(cols=['school', 'sex', 'address'])
 df_encoded = encoder.fit_transform(student_df)
 
 X = df_encoded[independent_vars]  
@@ -79,7 +79,6 @@ elif regression == 'Compare R² values':
     st.text('Compare R² values:')
     st.table(compare_df)
 
-# streamlit
 st.title('Predict Final Score.')
 
 new_student_features = {}
@@ -145,5 +144,3 @@ if school != '' and sex != '' and age != '' and address != '' and studytime != '
     s_predicted = svr_regressor.predict(new_student_df).round().astype(int)
     text = "With Support Vector Machine (SVM) Regression I predict a final score of "+str(s_predicted[0])+'.'
     st.text(text)
-
-#streamlit run ./AI/Homework/Task2/Homework_Task2_streamlit.py
