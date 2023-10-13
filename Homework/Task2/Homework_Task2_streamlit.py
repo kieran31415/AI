@@ -8,7 +8,7 @@ import category_encoders as ce
 from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 
-#github_csv_url = 'https://github.com/kieran31415/AI/blob/main/Homework/Task2/data/student-mat.csv'
+github_csv_url = 'https://raw.githubusercontent.com/kieran31415/AI/main/Homework/Task2/data/student-mat.csv'
 student_df = pd.read_csv('.\data\student-mat.csv',delimiter=';')
 
 independent_vars = ['school', 'sex', 'age', 'address', 'studytime', 'absences', 'G1', 'G2']
