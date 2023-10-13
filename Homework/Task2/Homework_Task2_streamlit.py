@@ -16,7 +16,7 @@ regression = st.selectbox('What technique would you like to use?',
                           ('Linear Regression', 'Gradient Boosting Regressor', 'Support Vector Machine (SVM) Regression', 'Compare R² values'))
 
 # Linear regression
-encoder = ce.OrdinalEncoder(cols=['school', 'sex', 'address'])
+#encoder = ce.OrdinalEncoder(cols=['school', 'sex', 'address'])
 df_encoded = encoder.fit_transform(student_df)
 
 X = df_encoded[independent_vars]  
@@ -28,7 +28,7 @@ model = LinearRegression()
 model.fit(X_train_L, y_train_L) 
 
 # Gradient Boosting Regressor
-student_df_GBR = student_df.copy()
+#student_df_GBR = student_df.copy()
 X = df_encoded[independent_vars]
 y = df_encoded['G3']
 
