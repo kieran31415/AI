@@ -2,4 +2,3 @@ numpy
 pandas
 sklearn
 category_encoders
-./data/student-mat.csv
