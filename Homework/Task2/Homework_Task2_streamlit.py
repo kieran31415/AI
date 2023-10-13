@@ -9,7 +9,7 @@ from sklearn.svm import SVR
 from sklearn.metrics import r2_score
 
 github_csv_url = 'https://raw.githubusercontent.com/kieran31415/AI/main/Homework/Task2/data/student-mat.csv'
-student_df = pd.read_csv('.\data\student-mat.csv',delimiter=';')
+student_df = pd.read_csv(github_csv_url,delimiter=';')
 
 independent_vars = ['school', 'sex', 'age', 'address', 'studytime', 'absences', 'G1', 'G2']
 regression = st.selectbox('What technique would you like to use?',
