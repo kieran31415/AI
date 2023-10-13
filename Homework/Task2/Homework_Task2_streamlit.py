@@ -28,7 +28,6 @@ model = LinearRegression()
 model.fit(X_train_L, y_train_L) 
 
 # Gradient Boosting Regressor
-#student_df_GBR = student_df.copy()
 X = df_encoded[independent_vars]
 y = df_encoded['G3']
 
@@ -38,7 +37,6 @@ gb_regressor = GradientBoostingRegressor(n_estimators=100, random_state=0)
 gb_regressor.fit(X_train_G, y_train_G)
 
 # Support Vector Machine (SVM) Regression
-student_df_SVM = student_df.copy()
 X = df_encoded[independent_vars]
 y = df_encoded['G3']
 
