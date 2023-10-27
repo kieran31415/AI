@@ -6,6 +6,10 @@ from tensorflow import keras
 from keras.utils import image_dataset_from_directory
 from keras import optimizers
 from keras import layers
+import requests
+from PIL import Image
+from io import BytesIO
+import os
 
 # Define a Streamlit app
 def main():
@@ -48,29 +52,40 @@ def main():
 
         # Include your training code here, updating the model with the selected options
         train_val_datagen = ImageDataGenerator(validation_split=0.2,
-                                   rescale=1./255,
-                                   shear_range=0.2,
-                                   zoom_range=0.2,
-                                   horizontal_flip=True)
+                                               rescale=1./255,
+                                               shear_range=0.2,
+                                               zoom_range=0.2,
+                                               horizontal_flip=True)
 
-        test_datagen = ImageDataGenerator(rescale=1./255)
+        # Create a temporary directory to store training images
+        tmp_train_dir = 'tmp_training_data'
+        os.makedirs(tmp_train_dir, exist_ok=True)
 
-        training_set = train_val_datagen.flow_from_directory(f"{map}/data/training_set",
-                                                 subset='training',
-                                                 target_size=(64, 64),
-                                                 batch_size=32,
-                                                 class_mode='categorical') 
+        # Fetch the training set images from GitHub URLs
+        for category in ['boat', 'bus', 'car', 'motorbike', 'plane']:
+            category_url = f"{map}/training_set/{category}/"
+            response = requests.get(category_url)
+            if response.status_code == 200:
+                category_images = [category_url + img for img in response.text.splitlines()]
+                for img_url in category_images:
+                    img_response = requests.get(img_url)
+                    if img_response.status_code == 200:
+                        img = Image.open(BytesIO(img_response.content))
+                        img.save(os.path.join(tmp_train_dir, os.path.basename(img_url)))
 
-        validation_set = train_val_datagen.flow_from_directory(f"{map}/data/training_set",
-                                                 subset='validation',
-                                                 target_size=(64, 64),
-                                                 batch_size=32,
-                                                 class_mode='categorical')
+        # Create the training and validation sets using the temporary directory
+        training_set = train_val_datagen.flow_from_directory(tmp_train_dir,
+                                                             target_size=(64, 64),
+                                                             batch_size=32,
+                                                             class_mode='categorical',
+                                                             subset='training') 
 
-        test_set = test_datagen.flow_from_directory(f"{map}/data/testing_set",
-                                            target_size=(64, 64),
-                                            batch_size=32,
-                                            class_mode='categorical')
+        validation_set = train_val_datagen.flow_from_directory(tmp_train_dir,
+                                                               target_size=(64, 64),
+                                                               batch_size=32,
+                                                               class_mode='categorical',
+                                                               subset='validation')
+
 
         # For example, update the `num_epochs` and `use_regularization` in your training code
         NUM_CLASSES = 5
