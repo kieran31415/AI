@@ -41,36 +41,25 @@ def main():
     st.subheader("Sample Images")
     vehicles = ['Boat', 'Bus', 'Car', 'Motorbike', 'Plane']
     image_data = [
-    {"path": map + "testing_set/boat/boat.13.jpg", "title": "Boat"},
-    {"path": map + "testing_set/bus/bus.2.jpg", "title": "Bus"},
-    {"path": map + "testing_set/car/car.2.jpg", "title": "Car"},
-    {"path": map + "testing_set/motorbike/motorbike.0.jpg", "title": "Motorbike"},
-    {"path": map + "testing_set/plane/plane.26.jpg", "title": "Plane"}
+        {"path": map + "testing_set/boat/boat.13.jpg", "title": "Boat"},
+        {"path": map + "testing_set/bus/bus.2.jpg", "title": "Bus"},
+        {"path": map + "testing_set/car/car.2.jpg", "title": "Car"},
+        {"path": map + "testing_set/motorbike/motorbike.0.jpg", "title": "Motorbike"},
+        {"path": map + "testing_set/plane/plane.26.jpg", "title": "Plane"}
     ]
 
-# Create a Streamlit layout
+# Display images using Streamlit
     st.title("Image Gallery")
 
-# Loop through the image data and display each image with a title
     for image_info in image_data:
         st.subheader(image_info["title"])
         st.image(image_info["path"])
-
-    # Display the figure using Streamlit
-    st.pyplot(fig)
 
     # Training Controls Section
     st.header("Training Controls")
 
     # Slider for the number of training epochs
     num_epochs = st.slider("Number of Epochs", min_value=1, max_value=50, value=20)
-
-    # Checkbox for regularization options
-    use_regularization = st.checkbox("Use Regularization")
-
-    if use_regularization:
-        # You can add more regularization options here
-        st.write("Regularization options enabled")
 
     # Button to start training
     if st.button("Start Training"):
@@ -85,19 +74,19 @@ def main():
 
         test_datagen = ImageDataGenerator(rescale = 1./255)
 
-        training_set = train_val_datagen.flow_from_directory('data/training_set',
+        training_set = train_val_datagen.flow_from_directory(map+'/training_set',
                                                  subset='training',
                                                  target_size = (64, 64),
                                                  batch_size = 32,
                                                  class_mode = 'categorical') 
 
-        validation_set = train_val_datagen.flow_from_directory('data/training_set',
+        validation_set = train_val_datagen.flow_from_directory(map+'/training_set',
                                                  subset='validation',
                                                  target_size = (64, 64),
                                                  batch_size = 32,
                                                  class_mode = 'categorical')
 
-        test_set = test_datagen.flow_from_directory('data/testing_set',
+        test_set = test_datagen.flow_from_directory(map+'/testing_set',
                                             target_size = (64, 64),
                                             batch_size = 32,
                                             class_mode = 'categorical')
