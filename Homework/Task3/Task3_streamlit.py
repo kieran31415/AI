@@ -1,35 +1,12 @@
 import streamlit as st
-import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-from sklearn.metrics import confusion_matrix
+from keras.preprocessing.image import ImageDataGenerator
 import tensorflow as tf
 from tensorflow import keras
-from keras.models import Sequential
-from keras.layers import Conv2D
-from keras.layers import MaxPooling2D
-from keras.layers import Flatten
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.preprocessing import image
 from keras.utils import image_dataset_from_directory
-from keras.preprocessing.image import ImageDataGenerator
-import seaborn as sns
 from keras import optimizers
 from keras import layers
-import os
-import time
-import requests
-from selenium import webdriver
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import urllib.request
 
-headers = {}
-#response = requests.get(f'https://api.github.com/repos/kieran31415/AI/main/Homework/Task3/data', headers=headers)
-map = 'https://raw.githubusercontent.com/kieran31415/AI/main/Homework/Task3/data'
 # Define a Streamlit app
 def main():
     st.title("Vehicle Classifier EDA and Training Controls")
@@ -40,15 +17,19 @@ def main():
     # Display some sample images
     st.subheader("Sample Images")
     vehicles = ['Boat', 'Bus', 'Car', 'Motorbike', 'Plane']
+    
+    # Define a map to your GitHub repository
+    map = 'https://raw.githubusercontent.com/kieran31415/AI/main/Homework/Task3/data'
+
     image_data = [
-        {"path": map + "testing_set/boat/boat.13.jpg", "title": "Boat"},
-        {"path": map + "testing_set/bus/bus.2.jpg", "title": "Bus"},
-        {"path": map + "testing_set/car/car.2.jpg", "title": "Car"},
-        {"path": map + "testing_set/motorbike/motorbike.0.jpg", "title": "Motorbike"},
-        {"path": map + "testing_set/plane/plane.26.jpg", "title": "Plane"}
+        {"path": f"{map}/testing_set/boat/boat.13.jpg", "title": "Boat"},
+        {"path": f"{map}/testing_set/bus/bus.2.jpg", "title": "Bus"},
+        {"path": f"{map}/testing_set/car/car.2.jpg", "title": "Car"},
+        {"path": f"{map}/testing_set/motorbike/motorbike.0.jpg", "title": "Motorbike"},
+        {"path": f"{map}/testing_set/plane/plane.26.jpg", "title": "Plane"}
     ]
 
-# Display images using Streamlit
+    # Display images using Streamlit
     st.title("Image Gallery")
 
     for image_info in image_data:
@@ -67,35 +48,36 @@ def main():
 
         # Include your training code here, updating the model with the selected options
         train_val_datagen = ImageDataGenerator(validation_split=0.2,
-                                   rescale = 1./255,
-                                   shear_range = 0.2,
-                                   zoom_range = 0.2,
-                                   horizontal_flip = True)
+                                   rescale=1./255,
+                                   shear_range=0.2,
+                                   zoom_range=0.2,
+                                   horizontal_flip=True)
 
-        test_datagen = ImageDataGenerator(rescale = 1./255)
+        test_datagen = ImageDataGenerator(rescale=1./255)
 
-        training_set = train_val_datagen.flow_from_directory(map+'/training_set',
+        training_set = train_val_datagen.flow_from_directory(f"{map}/data/training_set",
                                                  subset='training',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 class_mode = 'categorical') 
+                                                 target_size=(64, 64),
+                                                 batch_size=32,
+                                                 class_mode='categorical') 
 
-        validation_set = train_val_datagen.flow_from_directory(map+'/training_set',
+        validation_set = train_val_datagen.flow_from_directory(f"{map}/data/training_set",
                                                  subset='validation',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 class_mode = 'categorical')
+                                                 target_size=(64, 64),
+                                                 batch_size=32,
+                                                 class_mode='categorical')
 
-        test_set = test_datagen.flow_from_directory(map+'/testing_set',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            class_mode = 'categorical')
+        test_set = test_datagen.flow_from_directory(f"{map}/data/testing_set",
+                                            target_size=(64, 64),
+                                            batch_size=32,
+                                            class_mode='categorical')
+
         # For example, update the `num_epochs` and `use_regularization` in your training code
         NUM_CLASSES = 5
 
-# Create a sequential model with a list of layers
+        # Create a sequential model with a list of layers
         model = tf.keras.Sequential([
-            layers.Conv2D(32, (3, 3), input_shape = (64, 64, 3), activation="relu"),
+            layers.Conv2D(32, (3, 3), input_shape=(64, 64, 3), activation="relu"),
             layers.MaxPooling2D((2, 2)),
             layers.Dropout(0.2),
             layers.Conv2D(256, (3, 3), activation="relu"),
@@ -104,19 +86,20 @@ def main():
             layers.Flatten(),
             layers.Dense(128, activation="sigmoid"),
             layers.Dense(NUM_CLASSES, activation="softmax")
-            ])
+        ])
 
-# Compile and train your model as usual
-        model.compile(optimizer = optimizers.Adam(learning_rate=0.001), 
-              loss = 'binary_crossentropy', 
-              metrics = ['accuracy'])
+        # Compile and train your model as usual
+        model.compile(optimizer=optimizers.Adam(learning_rate=0.001), 
+                      loss='binary_crossentropy', 
+                      metrics=['accuracy'])
 
         print(model.summary())
+
         # Once training is done, you can display the loss and accuracy plots as you did before.
         history = model.fit(training_set,
-                validation_data = validation_set,
-                epochs = 20
-                )
+                            validation_data=validation_set,
+                            epochs=num_epochs
+                            )
         # Display the loss and accuracy plots (similar to your code)
         st.subheader("Training Progress")
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
