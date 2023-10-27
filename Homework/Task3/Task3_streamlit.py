@@ -21,7 +21,27 @@ def main():
     
     # Display some sample images
     st.subheader("Sample Images")
-    vehicles = ['Boat', 'Bus', 'Car', 'Motorbike', 'Plane']
+    
+    root_directory = "./data"
+    def count_pictures(root_directory, vehicle):
+        counter = 0
+        for foldername, subfolders, filenames in os.walk(root_directory):
+            for filename in filenames:
+                if vehicle in filename:
+                    counter += 1
+        return counter
+
+# Loop over all the vehicles
+    vehicles = ['boat', 'bus', 'car', 'motorbike', 'plane']
+    total_count = 0
+    for vehicle in vehicles:
+    # Add and print the amount of pictures of this type of vehicle
+        count = count_pictures(root_directory, vehicle)
+        st.text(f"Number of pictures of a {vehicle}: {count}")
+        total_count += count
+        count = 0
+# Print the total amount of pictures
+    st.text(f"Total amount of pictures: {total_count}")
     
     # Define a map to your GitHub repository
     map = 'https://raw.githubusercontent.com/kieran31415/AI/main/Homework/Task3/data'
@@ -64,24 +84,6 @@ def main():
     # Create a list of categories
         categories = ['boat', 'bus', 'car', 'motorbike', 'plane']
 
-    # Create the training and validation sets
-        training_images = []
-        validation_images = []
-
-        for category in categories:
-            category_url = base_url + f"training_set/{category}/"
-            response = requests.get(category_url)
-
-            if response.status_code == 200:
-                category_images = [category_url + img for img in response.text.splitlines()]
-
-            # Split the category images into training and validation sets
-                split_index = int(0.8 * len(category_images))
-                training_images.extend(category_images[:split_index])
-                validation_images.extend(category_images[split_index:])
-            else:
-                st.write(f"Failed to fetch images from the '{category}' category.")
-
     # Create the training and validation sets using the fetched images
         train_val_datagen = ImageDataGenerator(
             validation_split=0.2,     # Split the data into training and validation sets with an 80/20 ratio.
@@ -98,7 +100,7 @@ def main():
 
 # Create a training data generator from the 'training_set' directory.
         training_set = train_val_datagen.flow_from_directory(
-            'tree/main/Homework/Task3/data/training_set',     # Directory containing the training data.
+            'data/training_set',     # Directory containing the training data.
             subset='training',       # Use the training subset of data.
             target_size=(64, 64),    # Resize images to a 64x64 pixel size.
             batch_size=32,           # Set the batch size for training data.
@@ -107,7 +109,7 @@ def main():
 
 # Create a validation data generator from the 'training_set' directory.
         validation_set = train_val_datagen.flow_from_directory(
-            'tree/main/Homework/Task3/data/training_set',     # Directory containing the training data.
+            'data/training_set',     # Directory containing the training data.
             subset='validation',     # Use the validation subset of data.
             target_size=(64, 64),    # Resize images to a 64x64 pixel size.
             batch_size=32,           # Set the batch size for validation data.
@@ -116,7 +118,7 @@ def main():
 
 # Create a test data generator from the 'testing_set' directory.
         test_set = test_datagen.flow_from_directory(
-            'tree/main/Homework/Task3/data/testing_set',      # Directory containing the test data.
+            'data/testing_set',      # Directory containing the test data.
             target_size=(64, 64),    # Resize images to a 64x64 pixel size.
             batch_size=32,           # Set the batch size for test data.
             class_mode='categorical' # Categorical labels for classification.
