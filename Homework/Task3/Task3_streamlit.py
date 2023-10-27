@@ -83,29 +83,43 @@ def main():
                 st.write(f"Failed to fetch images from the '{category}' category.")
 
     # Create the training and validation sets using the fetched images
-        train_datagen = ImageDataGenerator(rescale=1./255)
-        validation_datagen = ImageDataGenerator(rescale=1./255)
-
-        training_set = train_datagen.flow_from_dataframe(
-            dataframe=None,  # You can provide a dataframe if available, or use None
-            x=np.array([]),  # You can provide image data as a NumPy array or an empty array
-            y=None,  # You can provide labels if available, or use None
-            directory=None,  # No need to specify a directory when using x as NumPy array
-            target_size=(64, 64),
-            batch_size=32,
-            class_mode='categorical',
-            subset='training',
+        train_val_datagen = ImageDataGenerator(
+            validation_split=0.2,     # Split the data into training and validation sets with an 80/20 ratio.
+            rescale=1./255,           # Rescale pixel values to the range [0, 1].
+            shear_range=0.2,          # Apply shear transformations to augment the data.
+            zoom_range=0.2,           # Apply zoom transformations to augment the data.
+            horizontal_flip=True      # Apply horizontal flipping as an augmentation technique.
         )
 
-        validation_set = validation_datagen.flow_from_dataframe(
-            dataframe=None,  # You can provide a dataframe if available, or use None
-            x=np.array([]),  # You can provide image data as a NumPy array or an empty array
-            y=None,  # You can provide labels if available, or use None
-            directory=None,  # No need to specify a directory when using x as NumPy array
-            target_size=(64, 64),
-            batch_size=32,
-            class_mode='categorical',
-            subset='validation',
+# Create an ImageDataGenerator for the test data, only rescaling is applied.
+        test_datagen = ImageDataGenerator(
+            rescale=1./255  # Rescale pixel values to the range [0, 1] for test data.
+        )
+
+# Create a training data generator from the 'training_set' directory.
+        training_set = train_val_datagen.flow_from_directory(
+            'data/training_set',     # Directory containing the training data.
+            subset='training',       # Use the training subset of data.
+            target_size=(64, 64),    # Resize images to a 64x64 pixel size.
+            batch_size=32,           # Set the batch size for training data.
+            class_mode='categorical' # Categorical labels for classification.
+        )
+
+# Create a validation data generator from the 'training_set' directory.
+        validation_set = train_val_datagen.flow_from_directory(
+            'data/training_set',     # Directory containing the training data.
+            subset='validation',     # Use the validation subset of data.
+            target_size=(64, 64),    # Resize images to a 64x64 pixel size.
+            batch_size=32,           # Set the batch size for validation data.
+            class_mode='categorical' # Categorical labels for classification.
+        )
+
+# Create a test data generator from the 'testing_set' directory.
+        test_set = test_datagen.flow_from_directory(
+            'data/testing_set',      # Directory containing the test data.
+            target_size=(64, 64),    # Resize images to a 64x64 pixel size.
+            batch_size=32,           # Set the batch size for test data.
+            class_mode='categorical' # Categorical labels for classification.
         )
 
 
