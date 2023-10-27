@@ -10,6 +10,7 @@ import requests
 from PIL import Image
 from io import BytesIO
 import os
+import numpy as np
 
 # Define a Streamlit app
 def main():
@@ -51,40 +52,61 @@ def main():
         st.text(f"Training model for {num_epochs} epochs...")
 
         # Include your training code here, updating the model with the selected options
+        base_url = "https://github.com/kieran31415/AI/tree/main/Homework/Task3/data/"
+
+    # Create an ImageDataGenerator
         train_val_datagen = ImageDataGenerator(validation_split=0.2,
-                                               rescale=1./255,
-                                               shear_range=0.2,
-                                               zoom_range=0.2,
-                                               horizontal_flip=True)
+                                           rescale=1./255,
+                                           shear_range=0.2,
+                                           zoom_range=0.2,
+                                           horizontal_flip=True)
 
-        # Create a temporary directory to store training images
-        tmp_train_dir = 'tmp_training_data'
-        os.makedirs(tmp_train_dir, exist_ok=True)
+    # Create a list of categories
+        categories = ['boat', 'bus', 'car', 'motorbike', 'plane']
 
-        # Fetch the training set images from GitHub URLs
-        for category in ['boat', 'bus', 'car', 'motorbike', 'plane']:
-            category_url = f"{map}/training_set/{category}/"
+    # Create the training and validation sets
+        training_images = []
+        validation_images = []
+
+        for category in categories:
+            category_url = base_url + f"training_set/{category}/"
             response = requests.get(category_url)
+
             if response.status_code == 200:
                 category_images = [category_url + img for img in response.text.splitlines()]
-                for img_url in category_images:
-                    img_response = requests.get(img_url)
-                    if img_response.status_code == 200:
-                        img = Image.open(BytesIO(img_response.content))
-                        img.save(os.path.join(tmp_train_dir, os.path.basename(img_url)))
 
-        # Create the training and validation sets using the temporary directory
-        training_set = train_val_datagen.flow_from_directory(tmp_train_dir,
-                                                             target_size=(64, 64),
-                                                             batch_size=32,
-                                                             class_mode='categorical',
-                                                             subset='training') 
+            # Split the category images into training and validation sets
+                split_index = int(0.8 * len(category_images))
+                training_images.extend(category_images[:split_index])
+                validation_images.extend(category_images[split_index:])
+            else:
+                st.write(f"Failed to fetch images from the '{category}' category.")
 
-        validation_set = train_val_datagen.flow_from_directory(tmp_train_dir,
-                                                               target_size=(64, 64),
-                                                               batch_size=32,
-                                                               class_mode='categorical',
-                                                               subset='validation')
+    # Create the training and validation sets using the fetched images
+        train_datagen = ImageDataGenerator(rescale=1./255)
+        validation_datagen = ImageDataGenerator(rescale=1./255)
+
+        training_set = train_datagen.flow_from_dataframe(
+            dataframe=None,  # You can provide a dataframe if available, or use None
+            x=np.array([]),  # You can provide image data as a NumPy array or an empty array
+            y=None,  # You can provide labels if available, or use None
+            directory=None,  # No need to specify a directory when using x as NumPy array
+            target_size=(64, 64),
+            batch_size=32,
+            class_mode='categorical',
+            subset='training',
+        )
+
+        validation_set = validation_datagen.flow_from_dataframe(
+            dataframe=None,  # You can provide a dataframe if available, or use None
+            x=np.array([]),  # You can provide image data as a NumPy array or an empty array
+            y=None,  # You can provide labels if available, or use None
+            directory=None,  # No need to specify a directory when using x as NumPy array
+            target_size=(64, 64),
+            batch_size=32,
+            class_mode='categorical',
+            subset='validation',
+        )
 
 
         # For example, update the `num_epochs` and `use_regularization` in your training code
